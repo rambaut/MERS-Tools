@@ -561,8 +561,8 @@ div.reference {
 	}).addTo(map);
 
 	queue()
-        .defer(d3.json, "data/cities.json")
-        .defer(d3.csv, "data/cases.csv")
+        .defer(d3.json, "http://rambaut.github.io/MERS-Cases/data/cities.json")
+        .defer(d3.csv, "http://rambaut.github.io/MERS-Cases/data/cases.csv")
         .await(ready);
 
 

@@ -112,7 +112,7 @@
 	console.log(parameters); 
 
 	queue()
-		.defer(d3.csv, "data/cases.csv")
+		.defer(d3.csv, "http://rambaut.github.io/MERS-Cases/data/cases.csv")
 		.await(ready);
 
 	function ready(error, caseData) {

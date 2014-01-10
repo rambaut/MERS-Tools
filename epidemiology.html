@@ -181,7 +181,7 @@
     //script wrapped in a function to avoid polluting namespace
     (function() {
 
-        var caseFile = "data/cases.csv";
+        var caseFile = "http://rambaut.github.io/MERS-Cases/data/cases.csv";
 		
 		d3.csv(caseFile, function(error, caseData) {
 			epidemic.initialize(caseData, "parameters", "knowns", "outputs");

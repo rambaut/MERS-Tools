@@ -13,7 +13,7 @@
 		<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
 		<script type="text/javascript" charset="utf-8">
 
-			d3.csv("data/cases.csv", function(caseData) {
+			d3.csv("http://rambaut.github.io/MERS-Cases/data/cases.csv", function(caseData) {
 	
 				$('#dynamic').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>' );
 				$('#example').dataTable( {
