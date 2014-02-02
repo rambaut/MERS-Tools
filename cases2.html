@@ -464,6 +464,19 @@ div.reference {
 			</div>
 		</div>
 	</div>
+
+	<div class="panel">
+		<h2>Other</span></h2>
+		<div class="panelcontent">
+			<div>
+				<div id="occupation-chart" class="dc-chart inline-div align-bottom">
+					<span class="title">Occupation</span>
+					<span class="reset title" style="display: none;">| <a href="javascript:occupationChart.filterAll();dc.redrawAll();">reset</a></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="panel">
 		<h2>Case list</span></h2>
 		<div class="panelcontent">
@@ -537,6 +550,7 @@ div.reference {
 	var animalChart = dc.rowChart("#animal-chart");
 	var statusChart = dc.rowChart("#status-chart");
 	var dateTypeChart = dc.rowChart("#date-type-chart");
+	var occupationChart = dc.rowChart("#occupation-chart");
 
 	dc.constants.EVENT_DELAY = 0;
 
@@ -763,7 +777,9 @@ div.reference {
 		  caseStatus = crossFilter.dimension(function(d) { return d.status; }),
 		  caseStatusType = caseStatus.group(function(d) { return d; }),
 		  dateType = crossFilter.dimension(function(d) { return (d.dateType === "onset" || d.dateType === "hospitalized" ? "with date of case" : "only date of report"); }),
-		  dateTypes = dateType.group(function(d) { return d; });
+		  dateTypes = dateType.group(function(d) { return d; }),
+		  occupation = crossFilter.dimension(function(d) { return d.HCW === "TRUE" ? "Healthcare" : "Other"; }),
+		  occupationTypes = occupation.group(function(d) { return d; });
 
 		onsetChart
 			.width(900)
@@ -992,6 +1008,24 @@ div.reference {
 				})
 			.xAxis().ticks(5);		
 
+		occupationChart
+			.transitionDuration(0)
+			.width(140)
+			.height(150)
+			.margins({top: 73, right: 0, bottom: 20, left: 20})
+			.group(occupationTypes)
+			.dimension(occupation)
+			.ordinalColors(['#3D5200', '#6B8F00', '#99CC00', '#B8DB4D'])
+			.label(function (d) {
+				return d.value + " " + d.key; 
+			})
+			.title(function(d) {return d.value;})
+			.elasticX(false)
+			.on("filtered", function() { 
+				renderAll(); 
+				})
+			.xAxis().ticks(5);
+			
 		// Render the initial lists.
 		var list = d3.selectAll(".list")
 		  .data([caseList]);

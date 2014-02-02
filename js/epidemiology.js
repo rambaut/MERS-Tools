@@ -112,47 +112,47 @@ epidemic = (function () {
     epidemic.outputs = [
         {
         	key: "P_co_primary",
-            label: "fraction of primary cases with comorbidity",
+            label: "fraction of primary cases with comorbidity"
         },
         {
         	key: "P_co_secondary",
-            label: "fraction of secondary cases with comorbidity",
+            label: "fraction of secondary cases with comorbidity"
         },
         {
         	key: "P_detect_sec",
-            label: "the chance of discovery of (mild) secondary cases through contact tracing",
+            label: "the chance of discovery of (mild) secondary cases through contact tracing"
         },
         {
         	key: "P_detect_co",
-            label: "chance of discovery of (mild) primary cases in people with comorbidities",
+            label: "chance of discovery of (mild) primary cases in people with comorbidities"
         },
         {
         	key: "P_detect_h",
-            label: "chance of discovery of (mild) primary cases in people who were healthy",
+            label: "chance of discovery of (mild) primary cases in people who were healthy"
         },
         {
         	key: "P_sev_given_co",
-            label: "probability of severe disease given comorbidity",
+            label: "probability of severe disease given comorbidity"
         },
         {
         	key: "P_sev_given_h",
-            label: "probability of severe disease given previously healthy",
+            label: "probability of severe disease given previously healthy"
         },
         {
         	key: "T_sec_co",
-            label: "total secondary cases with comorbidities",
+            label: "total secondary cases with comorbidities"
         },
         {
         	key: "T_sec_h",
-            label: "total secondary cases that were previously healthy",
+            label: "total secondary cases that were previously healthy"
         },
         {
         	key: "T_prim_co",
-            label: "total primary cases with comorbidities",
+            label: "total primary cases with comorbidities"
         },
         {
         	key: "T_prim_h",
-            label: "total primary cases that were previously healthy",
+            label: "total primary cases that were previously healthy"
         }
    ];
 
@@ -375,7 +375,7 @@ epidemic = (function () {
            });
     };
 
-	var MAX_VALUE = 1000.0;
+	var MAX_VALUE = 100000.0;
 	var updating = false;
 
     epidemic.setupKnown = function(select, known) {
@@ -395,10 +395,16 @@ epidemic = (function () {
         	.val(initialValue)
         	.change(function() {
         		if (!updating) {
+                    var oldValue = epidemic[name];
 					var value = text.val();
-					slider.slider("value", value);
-					epidemic[name] = value;
-					epidemic.update(name);
+                    epidemic[name] = value;
+					if (!epidemic.update(name)) {
+                        epidemic[name] = oldValue;
+                        epidemic.update(name);
+                        event.cancel();
+                    } else {
+                        slider.slider("value", value);
+                    }
 				}
 			});
         	
@@ -411,10 +417,16 @@ epidemic = (function () {
 				value: initialValue * MAX_VALUE,
 				slide: function( event, ui ) {
 	        		if (!updating) {
-						var value = ui.value / MAX_VALUE;
-						text.val(value);
-						epidemic[name] = value;
-						epidemic.update(name);
+                        var oldValue = epidemic[name];
+                        var value = ui.value / MAX_VALUE;
+                        epidemic[name] = value;
+                        if (!epidemic.update(name)) {
+                            epidemic[name] = oldValue;
+                            epidemic.update(name);
+                            event.cancel();
+                        } else {
+                            text.val(value);
+                        }
 					}
 				}
 			});
@@ -465,39 +477,74 @@ epidemic = (function () {
 		var eta = epidemic.prim_h_ns; // number of primary cases previously healthy and with mild disease
 		var theta = epidemic.sec_h_ns; // number of secondary cases previously healthy and with mild disease
 
+        var X, Y, Z;
 		if (known === "P_co_secondary" || known === "P_co_primary") {
 			if (known === "P_co_primary") {
 				// Known: fraction of primary cases with comorbidity
-				var Z = epidemic.P_co_primary; 
+				Z = epidemic.P_co_primary;
 
 				//fraction of secondary cases with comorbidity
-				epidemic.P_co_secondary = beta / (beta + ((delta * alpha * (1 - Z)) / (gamma * Z))); 				
+				X = beta / (beta + ((delta * alpha * (1 - Z)) / (gamma * Z)));
+
 			} else {
 				// Known: fraction of secondary cases with comorbidity
-				var X = epidemic.P_co_secondary; 
+				X = epidemic.P_co_secondary;
 
 				// fraction of primary cases with comorbidity
-				epidemic.P_co_primary = (alpha*delta*X)/(beta*gamma + alpha*delta*X - beta*X*gamma); 
+				Z = (alpha*delta*X)/(beta*gamma + alpha*delta*X - beta*X*gamma);
+
+
 			}
 
 			// the chance of discovery of (mild) secondary cases through contact tracing
-			epidemic.P_detect_sec = (zeta - ((zeta + theta) * epidemic.P_co_secondary)) / (((beta + delta) * epidemic.P_co_secondary) - beta);
+			Y = (zeta - ((zeta + theta) * epidemic.P_co_secondary)) / (((beta + delta) * epidemic.P_co_secondary) - beta);
 
 		} else if (known === "P_detect_sec") {
 			// Known: the chance of discovery of (mild) secondary cases through contact tracing
-			var Y = epidemic.P_detect_sec;
+			Y = epidemic.P_detect_sec;
 		
 			//fraction of secondary cases with comorbidity
-			epidemic.P_co_secondary = (beta*Y + zeta)/((beta+delta)*Y + zeta + theta); 
+			X = (beta*Y + zeta)/((beta+delta)*Y + zeta + theta);
 			
 			// fraction of primary cases with comorbidity
-			epidemic.P_co_primary = (alpha*delta*epidemic.P_co_secondary) /
+			Y = (alpha*delta*epidemic.P_co_secondary) /
 									(beta*gamma + alpha*delta*epidemic.P_co_secondary - beta*epidemic.P_co_secondary*gamma); 
 		} else {
 			throw Exception("Unknown known type");
 		}
 
-		epidemic.P_sev_given_co = beta / (beta + (zeta / epidemic.P_detect_sec)); // probability of severe disease given comorbidity
+        var bound = function(a, b, c) {
+            if (a > c) {
+                return c;
+            }
+            if (a < b) {
+                return b
+            }
+            return a;
+        }
+
+        if (X < 0.0 || X > 1.0) {
+            epidemic.P_co_secondary = bound(X, 0, 1);
+            epidemic.update("P_co_secondary");
+            return false;
+        }
+        if (Y < 0.0 || Y > 1.0) {
+            epidemic.P_co_primary = bound(Y, 0, 1);
+            epidemic.update("P_co_primary");
+            return false;
+        }
+        if (Z < 0.0 || Z > 1.0) {
+            epidemic.P_detect_sec = bound(Z, 0, 1);
+            epidemic.update("P_detect_sec");
+            return false;
+        }
+
+
+        epidemic.P_co_secondary = X;
+        epidemic.P_co_primary = Z;
+        epidemic.P_detect_sec = Y;
+
+        epidemic.P_sev_given_co = beta / (beta + (zeta / epidemic.P_detect_sec)); // probability of severe disease given comorbidity
 		epidemic.P_sev_given_h = delta / (delta + (theta / epidemic.P_detect_sec)); // probability of severe disease given previously healthy
 
 		epidemic.T_sec_co = beta + (zeta / epidemic.P_detect_sec); // total secondary cases with comorbidiites
@@ -511,6 +558,8 @@ epidemic = (function () {
 
 		epidemic.updateKnowns();
 		epidemic.updateOutputs();
+
+        return true;
 	};
 
     return epidemic
