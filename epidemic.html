@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flu Map</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 200;
+            font-size: 16px;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1px;
+            shape-rendering: crispEdges;
+        }
+        .axis .label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .case {
+            stroke: none;
+            fill: #BBB;
+        }
+
+        .line {
+            stroke: none;
+        }
+        .death {
+            stroke: none;
+            fill: #000;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 4px;
+            font-size: 12px;
+            background: #444444;
+            color: #ffffff;
+            border: 0px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+<script type="text/javascript" src="js/d3.min.js"></script>
+<script type="text/javascript" src="js/colorbrewer.js"></script>
+<script type="text/javascript" src="js/queue.min.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="epidemic.js"></script>
+<script>
+    parameters = getUrlVars();
+
+//    var host = 'all';
+//
+//    if (parameters.host !== undefined) {
+//        host = parameters.host;
+//    }
+
+    var epidemic = Epidemic();
+
+</script>
+</body>
+</html>
