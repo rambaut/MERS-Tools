@@ -615,12 +615,12 @@ div.reference {
 
 		if (d.death !== null) {
 			d.death = formatDate.parse(d.death);
-			if (d.death !== null || d.outcome === 'fatal') {
+			if (d.death !== null || d.outcome === 'fatal' || d.clinical === 'fatal') {
 				d.outcome = 2;
 			} else {
 				d.outcome = 1;
 			}
-		} else if (d.outcome === 'fatal') {
+		} else if (d.outcome === 'fatal' || d.clinical === 'fatal') {
 			d.outcome = 2;
 		} else {
 		  	d.outcome = 1;
@@ -932,6 +932,7 @@ div.reference {
 			.centerBar(false)
 			.gap(1)
 			.x(d3.scale.linear().domain([0.5, 25.5]))
+			//.y(d3.scale.log().domain([1,100]))
 			.centerBar(true)
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(10);
