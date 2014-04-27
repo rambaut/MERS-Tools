@@ -754,7 +754,7 @@ div.reference {
 		  onsetDates = onsetDate.group(d3.time.week),
 		  country = crossFilter.dimension(function(d) { return d.country; }),
 		  countries = country.group(function(d) { return d; }),
-		  location = crossFilter.dimension(function(d) { return (d.country == "KSA" ? d.city.name : "other countries" ); }),
+		  location = crossFilter.dimension(function(d) { return (d.country == "KSA" ? (d.city === null ? "unknown" : d.city.name) : "other countries" ); }),
 		  locations = location.group(function(d) { return d; }),
 		  gender = crossFilter.dimension(function(d) { return d.genderCode; }),
 		  genders = gender.group(function(d) { return d; }),
