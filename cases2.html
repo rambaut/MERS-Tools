@@ -568,10 +568,14 @@ div.reference {
 	//var layer = new L.StamenTileLayer('toner');
 	//map.addLayer(layer);
 
-	L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
-		key: "ffed45bc02bf40009f3d5c7e4dcf7f63",
-		styleId: 44909
-//		styleId: 104059
+//	L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png', {
+//		key: "ffed45bc02bf40009f3d5c7e4dcf7f63",
+//		styleId: 44909
+//	}).addTo(map);
+
+	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{mapId}/{z}/{x}/{y}.png', {
+		mapId: 'rambaut.map-d730jmmv',
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 	}).addTo(map);
 
 	queue()
