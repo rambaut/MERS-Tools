@@ -673,6 +673,8 @@ div.reference {
 		
 		if (d.date !== null) {
 			cases.push(d);
+		} else {
+			console.log("No date: " + d.number + ": " + d.code + ", " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], " + d.secondary + ", " + d.cluster);
 		}
 	
 		if ((d.cluster !== null && d.cluster.length > 0) || d.secondary === "TRUE") {
@@ -726,27 +728,27 @@ div.reference {
 	 });
   	
 		cases.sort(function(a,b) { return a.date.getTime() - b.date.getTime()});
-		
+
 		var lastDate = null;
 		var lastOnset = null;
 
-  		cases.forEach(function(d, i) {
-  			if (lastDate !== null) {
-  				d.waitingTime = dateDiffInDays(lastDate, d.date);
-  			}
-  	  		lastDate = d.date;
-  	  		if (d.dateType === "onset" || d.dateType === "hospitalized") {
+		cases.forEach(function(d, i) {
+			if (lastDate !== null) {
+				d.waitingTime = dateDiffInDays(lastDate, d.date);
+			}
+			lastDate = d.date;
+			if (d.dateType === "onset" || d.dateType === "hospitalized") {
 				if (lastOnset !== null) {
 					d.waitingTimeOnset = dateDiffInDays(lastOnset, d.date);
 				}
-  				lastOnset = d.date;
-  			}
-  			
-  			if (d.cluster !== null && d.cluster.count === 1) {
-  				d.cluster.count = 2;
-  			}
-			console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], "  + formatDate(d.date) + ", " + d.waitingTime + ", " + d.waitingTimeOnset );
-	  	});
+				lastOnset = d.date;
+			}
+	
+			if (d.cluster !== null && d.cluster.count === 1) {
+				d.cluster.count = 2;
+			}
+//			console.log(d.code + ": " + d.age + ", " + d.gender + ", " + d.country + " [" + d.dateType + "], "  + formatDate(d.date) + ", " + d.waitingTime + ", " + d.waitingTimeOnset );
+		});
 
 	  var ageGroupSize = 5;
 
