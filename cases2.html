@@ -590,6 +590,7 @@ div.reference {
 
 	  // Various formatters.
 	  var formatNumber = d3.format(",d"),
+	  	  formatPercent = d3.format(".1%"),
 		  formatDate = d3.time.format("%Y-%m-%d"),
 		  formatPrettyDate = d3.time.format("%d %b"),
 		  formatMonth = d3.time.format("%b %Y");
@@ -872,7 +873,9 @@ div.reference {
 			.dimension(gender)
 			.ordinalColors(['#B82E00', '#DB704D', '#F0C2B2'])
 			.label(function (d){
-				return d.value + " " + (d.key === 1 ? "female" : (d.key === 2 ? "male" : "unknown"));
+				var k = d.value;
+				var n = genders.top(3)[0].value + genders.top(3)[1].value + genders.top(3)[2].value;
+				return k + " " + (d.key === 1 ? "female" : (d.key === 2 ? "male" : "unknown")) + " (" + formatPercent(k / n) + ")";
 			})
 	    // (optional) whether chart should render labels, :default = true
 			.title(function(d){return d.value;})
@@ -889,7 +892,9 @@ div.reference {
 			.dimension(death)
 			.ordinalColors(['#E0E0D1', '#B8B894', '#999966'])
 			.label(function (d){
-				return d.value + " " + (d.key === 1 ? "alive" : (d.key === 2 ? "dead" : "unknown") + " (" + (d.value * 100.0 / death.group().value()) + "%)");
+				var k = d.value;
+				var n = deathStates.top(3)[0].value + deathStates.top(3)[1].value;
+				return k + " " + (d.key === 1 ? "alive" : (d.key === 2 ? "dead" : "unknown")) + " (" + formatPercent(k / n) + ")";
 			})
 			.title(function(d){return d.value;})
 			.elasticX(false)
