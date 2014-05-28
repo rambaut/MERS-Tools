@@ -798,6 +798,7 @@ div.reference {
 			.group(onsetDates)
 			.centerBar(true)
 			.gap(1)
+		    .elasticY(true)
 			.x(d3.time.scale().domain([new Date(2012, 0, 1), new Date()]))
 			.round(d3.time.week.round)
 			.xUnits(d3.time.weeks)
