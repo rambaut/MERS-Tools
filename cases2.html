@@ -707,6 +707,7 @@ div.reference {
 	
 		d.contact = (d.secondary === "TRUE" ? d.contact : "primary");
 		d.contact = (d.contact === "contact" ? "unspecified contact" : d.contact);
+		d.contact = (d.contact.indexOf("?") != -1 ? "unspecified contact" : d.contact);
 
 		d.status = (d.suspected === "TRUE" ? "suspected" : "confirmed");
 
