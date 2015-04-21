@@ -87,6 +87,7 @@ h1, h2 {
 .title {
   font-weight: 200;
   font-size: 12px;
+  margin-left: 10px;
 }
 
 .brush rect.extent {
@@ -381,21 +382,15 @@ div.reference {
 	<div class="panel">
 		<h2>Spatial Distribution</span></h2>
 		<div class="panelcontent">
-			<div class="units-row">
-				<div class="unit-30">
-					<div>
-						<div id="country-chart" class="units-row dc-chart">
-							<span class="title" class="inline-div">Cases by country of infection</span>
-							<span class="reset title" style="display: none;">| <a href="javascript:countryChart.filterAll();dc.redrawAll();">reset</a></span>
-						</div>
-						<div id="location-chart" class="dc-chart units-row">
-							<span class="title" class="inline-div">Cases by KSA location</span>
-							<span class="reset title" style="display: none;">| <a href="javascript:locationChart.filterAll();dc.redrawAll();">reset</a></span>
-						</div>
-					</div>
-				</div>
-				<div id="map" class="unit-70 align-top"></div>
+			<div id="country-chart" class="inline-div dc-chart">
+				<span class="title" class="inline-div">Country</span>
+				<span class="reset title" style="display: none;">| <a href="javascript:countryChart.filterAll();dc.redrawAll();">reset</a></span>
 			</div>
+			<div id="location-chart" class="inline-div dc-chart">
+				<span class="title" class="inline-div">KSA location</span>
+				<span class="reset title" style="display: none;">| <a href="javascript:locationChart.filterAll();dc.redrawAll();">reset</a></span>
+			</div>
+			<div id="map" class="inline-div align-top"></div>
 		</div>
 	</div>
 	
@@ -793,13 +788,12 @@ div.reference {
 			.width(900)
 			.height(150)
 			.transitionDuration(0)
-			.margins({top: 10, right: 20, bottom: 20, left: 30})
+			.margins({top: 10, right: 20, bottom: 20, left: 40})
 			.colors('steelblue')
 			.dimension(onsetDate)
 			.group(onsetDates)
 			.centerBar(true)
 			.gap(1)
-		    .elasticY(true)
 			.x(d3.time.scale().domain([new Date(2012, 0, 1), new Date()]))
 			.round(d3.time.week.round)
 			.xUnits(d3.time.weeks)
@@ -808,8 +802,8 @@ div.reference {
 		console.log(countries);
 		
 		countryChart
-			.width(300)
-			.height(200)
+			.width(120)
+			.height(250)
 			.margins({top: 0, right: 20, bottom: 20, left: 20})
 			.transitionDuration(0)
 			.group(countries)
@@ -829,8 +823,8 @@ div.reference {
 			.xAxis().ticks(5);
 
 		locationChart
-			.width(260)
-			.height(300)
+			.width(160)
+			.height(540)
 			.margins({top: 0, right: 20, bottom: 20, left: 20})
 			.transitionDuration(0)
 			.group(locations)
@@ -852,7 +846,7 @@ div.reference {
 		ageChart.width(300)
 			.transitionDuration(0)
 			.height(180)
-			.margins({top: 10, right: 10, bottom: 20, left: 30})
+			.margins({top: 10, right: 10, bottom: 20, left: 40})
 			.colors('#8B475D')
 			.dimension(age)
 			.group(ageGroups)
@@ -938,14 +932,14 @@ div.reference {
 		clusterSizeChart.width(300)
 			.transitionDuration(0)
 			.height(150)
-			.margins({top: 10, right: 10, bottom: 20, left: 30})
+			.margins({top: 10, right: 10, bottom: 20, left: 40})
 			.colors('teal')
 			.dimension(cluster)
 			.group(clusterSizes)
 			.centerBar(false)
 			.gap(1)
 			.x(d3.scale.linear().domain([0.5, 25.5]))
-			//.y(d3.scale.log().domain([1,100]))
+			.y(d3.scale.linear().domain([1,1000]))
 			.centerBar(true)
 			.on("filtered", function() { renderAll(); })
 			.xAxis().ticks(10);
